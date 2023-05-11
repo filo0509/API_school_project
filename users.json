@@ -1,0 +1,8 @@
+{
+  "dongnocchi":
+     {"user":"dongnocchi","password": "dongnocchi","disable":["anitrar"] } ,
+  "pippo":
+     {"user": "pippo","password": "pippo","disable":["tabeASY","tabe"]  } ,    
+  "pluto":
+     {"user": "pluto","password": "pluto","disable":["tabeASY","tabe"]  }     
+}

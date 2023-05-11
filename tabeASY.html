@@ -1,0 +1,271 @@
+<!--
+@author Filippo Donati
+@email filippo.donati@liceodongnocchi.eu
+@create date 2023-05-11 12:37:34
+@modify date 2023-05-11 12:37:38
+@desc [description]
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      function crea_tabella_da_query_sqlite_json(json0) {
+        // json0: text . esempio [{"ArtistId":1,"Name":"AC/DC"},...,...] array di oggetti
+        // se c'e' almeno una riga, leggo le intestazioni
+        let tbl = JSON.parse(json0);
+        let t = "<table border=1><tr>";
+        if (tbl.length > 0) {
+          campi = Object.keys(tbl[0]);
+          for (c = 0; c < campi.length; c++) t += `<th>${campi[c]}`;
+          t += "</tr>";
+          // ora le linee
+
+          for (
+            let l = 0;
+            l < tbl.length;
+            l++ // ogni linea restituita dalla query
+          ) {
+            t += "<tr>";
+            for (c = 0; c < campi.length; c++) t += `<td>${tbl[l][campi[c]]}`;
+            t += "</tr>";
+          }
+          // COME SOPRA: alternativa con foreach()
+          /*
+    tbl.forEach( element=> { // element e' la singola riga di array  es {"ArtistId":1,"Name":"AC/DC"}
+      t+='<tr>'  
+      campi.forEach(fie=>  t+=`<td>${element[ fie ]}` )
+      t+='</tr>'  
+      })
+*/
+
+          t += "</table>";
+          //
+          return t;
+        }
+        return "";
+      }
+
+      var xhttp = new XMLHttpRequest();
+
+      function get_info(o1, var0, dst) {
+        // if pending, abort else initiate a new one
+        dst1 = dst;
+        xhttp.onreadystatechange = function (o1, dst, var0) {
+          //dst1=dst
+          if (xhttp.readyState == 4 && this.status == 200) {
+            document.getElementById(dst1).innerHTML = xhttp.responseText; //"txt"
+            //xhttp.abort();
+          }
+        };
+        site = "ASY"; // header per indicare  richiesta asincrona
+        he00 = "tabe";
+        ky = "nume=" + document.getElementById(var0).value; // nume=7
+        xhttp.open("POST", site, true); // "ASY?pro="+o1.value, true);
+        xhttp.setRequestHeader(he00, "ON"); // // trick to insulate HTTP standard requests
+        xhttp.setRequestHeader("Accept", null);
+        //xhttp.send(); // if GET request is in URL
+        xhttp.send(ky); // if POST request is  payload
+      }
+
+      function get_pow(o1, var0, var1, dst) {
+        // if pending, abort else initiate a new one
+        dst1 = dst;
+        xhttp.onreadystatechange = function (o1, dst, var0, var1) {
+          //dst1=dst
+          if (xhttp.readyState == 4 && this.status == 200) {
+            var temp = xhttp.responseText;
+            document.getElementById(dst1).innerHTML = temp; //"txt"
+            //xhttp.abort();
+          }
+        };
+        site = "ASY"; // header per indicare  richiesta asincrona
+        he00 = "pow";
+        ky = "nume=" + document.getElementById(var0).value; // nume=7
+        ky += "&exp=" + document.getElementById(var1).value; // nume=7
+        xhttp.open("POST", site, true); // "ASY?pro="+o1.value, true);
+        xhttp.setRequestHeader(he00, "ON"); // // trick to insulate HTTP standard requests
+        xhttp.setRequestHeader("Accept", null);
+        //xhttp.send(); // if GET request is in URL
+        xhttp.send(ky); // if POST request is  payload
+      }
+
+      function get_play(o1, var0, dst) {
+        // if pending, abort else initiate a new one
+        dst1 = dst;
+        xhttp.onreadystatechange = function (o1, dst, var0, var1) {
+          //dst1=dst
+          if (xhttp.readyState == 4 && this.status == 200) {
+            var temp = xhttp.responseText;
+            document.getElementById(dst1).innerHTML = temp; //"txt"
+            //xhttp.abort();
+          }
+        };
+        site = "ASY"; // header per indicare  richiesta asincrona
+        he00 = "play";
+        ky = "nume=" + document.getElementById(var0).value; // nume=7
+        //ky+="&exp="+document.getElementById(var1).value; // nume=7
+        xhttp.open("POST", site, true); // "ASY?pro="+o1.value, true);
+        xhttp.setRequestHeader(he00, "ON"); // // trick to insulate HTTP standard requests
+        xhttp.setRequestHeader("Accept", null);
+        //xhttp.send(); // if GET request is in URL
+        xhttp.send(ky); // if POST request is  payload
+      }
+      function get_artists(o1, var0, dst) {
+        // if pending, abort else initiate a new one
+        dst1 = dst;
+        xhttp.onreadystatechange = function (o1, dst, var0, var1) {
+          //dst1=dst
+          if (xhttp.readyState == 4 && this.status == 200) {
+            var temp = xhttp.responseText;
+            temp = crea_tabella_da_query_sqlite_json(temp);
+            document.getElementById(dst1).innerHTML = temp; //"txt"
+            //xhttp.abort();
+          }
+        };
+        site = "ASY"; // header per indicare  richiesta asincrona
+        he00 = "artists";
+        ky = "nume=" + document.getElementById(var0).value; // nume=7
+        //ky+="&exp="+document.getElementById(var1).value; // nume=7
+        xhttp.open("POST", site, true); // "ASY?pro="+o1.value, true);
+        xhttp.setRequestHeader(he00, "ON"); // // trick to insulate HTTP standard requests
+        xhttp.setRequestHeader("Accept", null);
+        //xhttp.send(); // if GET request is in URL
+        xhttp.send(ky); // if POST request is  payload
+      }
+
+      function get_air_quality(o1, var0, var1, dst) {
+        // questa richiesta' e' indiretta: server chiede ad altra api e manda la risposta
+        dst1 = dst;
+        xhttp.onreadystatechange = function (o1, dst, var0, var1) {
+          //dst1=dst
+          if (xhttp.readyState == 4 && this.status == 200) {
+            var temp = JSON.parse(xhttp.responseText);
+            //temp=crea_tabella_da_query_sqlite_json(temp)
+            res =
+              "Citta:  " +
+              temp["city_name"] +
+              "  inquinante NO2:  " +
+              temp["data"][0]["no2"] +
+              " alle:  " +
+              temp["data"][0]["datetime"] +
+              ":00    " + // ci sono solo le ore ciao
+              temp["timezone"];
+            document.getElementById(dst1).innerHTML =
+              res + "<br>" + xhttp.responseText; //"txt"
+            //xhttp.abort();ciao
+          }
+        };
+        site = "ASY"; // header per indicare  richiesta asincrona
+        he00 = "airq";
+        ky = "lat0=" + document.getElementById(var0).value; // nume=7
+        ky += "&lon0=" + document.getElementById(var1).value; // nume=7
+        xhttp.open("POST", site, true); // "ASY?pro="+o1.value, true);
+        xhttp.setRequestHeader(he00, "ON"); // // trick to insulate HTTP standard requests
+        xhttp.setRequestHeader("Accept", null);
+        //xhttp.send(); // if GET request is in URL
+        xhttp.send(ky); // if POST request is  payload
+      }
+    </script>
+  </head>
+
+  <body>
+    <h2>TABELLINA ASY</h2>
+    <form>
+      <input
+        action="action"
+        onclick="window.history.go(-1); return false;"
+        type="submit"
+        value="Indietro"
+      /><br />
+      <label for="x1">Dimensione:</label>
+      <input type="text" id="x1" name="x1" /><br />
+    </form>
+    <button onclick="get_info(this,'x1','contenuto')" title="Tabellina">
+      TABELLINA
+    </button>
+
+    <div id="contenuto"></div>
+
+    <table border="1">
+      <tr>
+        <td>
+          <h2>POW ASY</h2>
+          <form>
+            <label for="x1a">Numero:</label>
+            <input type="text" id="x1a" name="x1a" /><br />
+            <label for="x2a">Esponente:</label>
+            <input type="text" id="x2a" name="x2a" /><br />
+          </form>
+          <button
+            onclick="get_pow(this,'x1a','x2a','contenutopow')"
+            title="Potenza"
+          >
+            POTENZA
+          </button>
+
+          <div id="contenutopow"></div>
+        </td>
+
+        <td>
+          <h2>PLAY ASY</h2>
+          <form>
+            <label for="x1b">Numero:</label>
+            <input type="text" id="x1b" name="x1b" /><br />
+          </form>
+          <button
+            onclick="get_play(this,'x1b','contenutoplay')"
+            title="Potenza"
+          >
+            PLAY
+          </button>
+
+          <div id="contenutoplay"></div>
+        </td>
+
+        <td>
+          <h2 title="Questa richiesta viene gestia direttamente dal server">
+            ARTIST (table) ASY
+          </h2>
+          <form>
+            <label for="x1b">Numero max Id:</label>
+            <input type="text" id="x1c" name="x1c" /><br />
+          </form>
+          <button
+            onclick="get_artists(this,'x1c','contenutoart')"
+            title="Artisti"
+          >
+            Chiedi
+          </button>
+
+          <div id="contenutoart"></div>
+        </td>
+
+        <td>
+          <h2
+            title="Questa richiesta viene girata dal server ad un altro server. Quando questo risponde la risposta viene inoltrata qui"
+          >
+            INDIRECT API AIR QUALITY (table) ASY
+          </h2>
+          <form>
+            <label for="lat1" onclick="this.form.lat1.value=9.19"
+              >Latitudine: (9.19)</label
+            >
+            <input type="text" id="lat1" name="lat1" /><br />
+            <label for="lon1" onclick="this.form.lon1.value=45.4642"
+              >Longitudine: (45.4642)</label
+            >
+            <input type="text" id="lon1" name="lon1" /><br />
+          </form>
+          <button
+            onclick="get_air_quality(this,'lat1','lon1','contenutoAIR')"
+            title="AIR QUALITY"
+          >
+            Chiedi
+          </button>
+
+          <div id="contenutoAIR"></div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
