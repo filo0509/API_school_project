@@ -1,21 +1,21 @@
-var http = require("http"); 
+// Struttura da seguire nella costruzione del progetto:
+// ogni feature deve avere la sua pagina (per esempio il generatore di password casuali deve avere la propria pagina)
+// magari la parte di DataBase la mettiamo in un'unica pagina
+
+var http = require("http");
 var https = require("https");
 var url = require("url");
-var fs = require("fs");  
+var fs = require("fs");
 var qs = require("querystring");
 
 const sqlite3 = require("sqlite3").verbose();
 
-let db = new sqlite3.Database(
-  "chinook.db",
-  sqlite3.OPEN_READWRITE,
-  (err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log("Connected to the chinook database.");
+let db = new sqlite3.Database("chinook.db", sqlite3.OPEN_READWRITE, (err) => {
+  if (err) {
+    console.error(err.message);
   }
-);
+  console.log("Connected to the chinook database.");
+});
 
 console.log("  richiesta multpla EACH (funzione chiamata per ogni riga)");
 db.serialize(() => {
@@ -159,6 +159,7 @@ function get_weak_mime(fn) {
 
   var r = s[s.length - 1];
   if (r == "CSS") return "text/css";
+  if (r == "JS") return "text/js";
   if (r == "TXT") return "text/plain";
   if (r == "HTML") return "text/html";
   if (r == "PDF") return "application/pdf";
@@ -183,6 +184,8 @@ function main(req, res) {
   </h3>
   </body></html>
   `);
+  const randomPassword = generateRandomPassword();
+  console.log(randomPassword);
   return res.end();
 }
 
@@ -383,4 +386,20 @@ function asy_handling(req, res, post) {
     res.write("<h2>401 not auth" + req.headers.airq);
     return res.end();
   }
+}
+
+// ! Funzioni snippet, queste funzioni non sono proprie del server
+
+// Questa funzione genera una password di 14 caratteri
+function generateRandomPassword() {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&*";
+  let password = "";
+
+  for (let i = 0; i < 14; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    password += characters[randomIndex];
+  }
+
+  return password;
 }
