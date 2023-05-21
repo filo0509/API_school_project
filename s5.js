@@ -180,12 +180,13 @@ function main(req, res) {
   res.write(
     "  <a href=./tabeASY.html style=' color:coral; '>Tabellina Asincrona</a> "
   );
+  res.write(
+    "  <a href=./password_generator.html style=' color:coral; '>Generatore password</a> "
+  );
   res.write(` <a href=/?logout=1>logout</a>
   </h3>
   </body></html>
   `);
-  const randomPassword = generateRandomPassword();
-  console.log(randomPassword);
   return res.end();
 }
 
@@ -333,6 +334,12 @@ function asy_handling(req, res, post) {
     }
     res.writeHead(200, { "Content-Type": "application/txt" });
     return res.end(txt1);
+  } else if (req.headers.psw) {
+    if (post.nume) {
+      txt1 = "" + generateRandomPassword(post.nume);
+    }
+    res.writeHead(200, { "Content-Type": "application/txt" });
+    return res.end(txt1);
   } else if (req.headers.play) {
     if (post.nume) {
       res.writeHead(200, { "Content-Type": "application/txt" });
@@ -391,12 +398,12 @@ function asy_handling(req, res, post) {
 // ! Funzioni snippet, queste funzioni non sono proprie del server
 
 // Questa funzione genera una password di 14 caratteri
-function generateRandomPassword() {
+function generateRandomPassword(max) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&*";
   let password = "";
 
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < max; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     password += characters[randomIndex];
   }
