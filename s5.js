@@ -11,11 +11,11 @@ var path = require("path");
 
 const sqlite3 = require("sqlite3").verbose();
 
-let db = new sqlite3.Database("chinook.db", sqlite3.OPEN_READWRITE, (err) => {
+let db = new sqlite3.Database("sqlite-sakila.db", sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     console.error(err.message);
   }
-  console.log("Connected to the chinook database.");
+  console.log("Connected to the sqlite-sakila database.");
 });
 
 console.log("  richiesta multpla EACH (funzione chiamata per ogni riga)");
