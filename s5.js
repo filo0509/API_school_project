@@ -172,23 +172,6 @@ function get_weak_mime(fn) {
 
 function main(req, res) {
   res.writeHead(200, { "Content-Type": "text/html", "other-heading": "set" });
-  //   res.write(`<!DOCTYPE html><html lang="en-US"><head>
-  //   <meta charset="utf-8">
-  //   <link rel=\"icon\" href=\"data:,\"></link>
-  // </head><body>
-  //  <h3>MAIN`);
-
-  //   res.write(
-  //     "  <a href=./tabeASY.html style=' color:coral; '>Tabellina Asincrona</a> "
-  //   );
-  //   res.write(
-  //     "  <a href=./password_generator.html style=' color:coral; '>Generatore password</a> "
-  //   );
-  //   res.write(` <a href=/?logout=1>logout</a>
-  //   </h3>
-  //   </body></html>
-  //   `);
-  //   res.writeHeader(200, {"Content-Type": "text/html"});
   fs.readFile("index.html", function (error, pgResp) {
     if (error) {
       res.writeHead(404);
