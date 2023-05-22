@@ -334,6 +334,12 @@ function asy_handling(req, res, post) {
     }
     res.writeHead(200, { "Content-Type": "application/txt" });
     return res.end(txt1);
+  } else if (req.headers.tot) {
+    if (post.nume) {
+      txt1 = "" + triangleoftartaglia(post.nume);
+    }
+    res.writeHead(200, { "Content-Type": "application/txt" });
+    return res.end(txt1);
   } else if (req.headers.play) {
     if (post.nume) {
       res.writeHead(200, { "Content-Type": "application/txt" });
@@ -403,4 +409,21 @@ function generateRandomPassword(max) {
   }
 
   return password;
+}
+
+function triangleoftartaglia(n) {
+  let n_rows = n;
+  let rows = new Array(n_rows+1);
+  var i, j;
+  for (i=0; i<= n_rows; i++)
+  rows[i] = new Array(i+1);
+  for (i=0; i<= n_rows; i++) {
+    rows[i][0] = 1;
+    rows[i][i] = 1;
+    for (j=1; j<i; j++) {
+      rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
+    } 
+  }
+
+  return rows;
 }
