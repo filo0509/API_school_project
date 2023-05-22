@@ -172,23 +172,6 @@ function get_weak_mime(fn) {
 
 function main(req, res) {
   res.writeHead(200, { "Content-Type": "text/html", "other-heading": "set" });
-  //   res.write(`<!DOCTYPE html><html lang="en-US"><head>
-  //   <meta charset="utf-8">
-  //   <link rel=\"icon\" href=\"data:,\"></link>
-  // </head><body>
-  //  <h3>MAIN`);
-
-  //   res.write(
-  //     "  <a href=./tabeASY.html style=' color:coral; '>Tabellina Asincrona</a> "
-  //   );
-  //   res.write(
-  //     "  <a href=./password_generator.html style=' color:coral; '>Generatore password</a> "
-  //   );
-  //   res.write(` <a href=/?logout=1>logout</a>
-  //   </h3>
-  //   </body></html>
-  //   `);
-  //   res.writeHeader(200, {"Content-Type": "text/html"});
   fs.readFile("index.html", function (error, pgResp) {
     if (error) {
       res.writeHead(404);
@@ -351,6 +334,12 @@ function asy_handling(req, res, post) {
     }
     res.writeHead(200, { "Content-Type": "application/txt" });
     return res.end(txt1);
+  } else if (req.headers.tot) {
+    if (post.nume) {
+      txt1 = "" + triangleoftartaglia(post.nume);
+    }
+    res.writeHead(200, { "Content-Type": "application/txt" });
+    return res.end(txt1);
   } else if (req.headers.play) {
     if (post.nume) {
       res.writeHead(200, { "Content-Type": "application/txt" });
@@ -420,4 +409,21 @@ function generateRandomPassword(max) {
   }
 
   return password;
+}
+
+function triangleoftartaglia(n) {
+  let n_rows = n;
+  let rows = new Array(n_rows+1);
+  var i, j;
+  for (i=0; i<= n_rows; i++)
+  rows[i] = new Array(i+1);
+  for (i=0; i<= n_rows; i++) {
+    rows[i][0] = 1;
+    rows[i][i] = 1;
+    for (j=1; j<i; j++) {
+      rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
+    } 
+  }
+
+  return rows;
 }
