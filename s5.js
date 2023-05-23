@@ -414,6 +414,7 @@ function generateRandomPassword(max) {
 function triangleoftartaglia(n) {
   let n_rows = n;
   let rows = new Array(n_rows+1);
+  let array = new Array(rows);
   var i, j;
   for (i=0; i<= n_rows; i++)
   rows[i] = new Array(i+1);
@@ -422,8 +423,9 @@ function triangleoftartaglia(n) {
     rows[i][i] = 1;
     for (j=1; j<i; j++) {
       rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
+      array[rows];
     } 
   }
 
-  return rows;
+  return array;
 }
