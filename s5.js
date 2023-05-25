@@ -411,24 +411,24 @@ function generateRandomPassword(max) {
   return password;
 }
 
-// function triangleoftartaglia(n) {
-//   let n_rows = n;
-//   let rows = new Array(n_rows+1);
-//   let array = new Array(rows);
-//   var i, j;
-//   for (i=0; i<= n_rows; i++)
-//   rows[i] = new Array(i+1);
-//   for (i=0; i<= n_rows; i++) {
-//     rows[i][0] = 1;
-//     rows[i][i] = 1;
-//     for (j=1; j<i; j++) {
-//       rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
-//       array[rows];
-//     } 
-//   }
+/*  function triangleoftartaglia(n) {
+   let n_rows = n;
+   let rows = new Array(n_rows+1);
+   let array = new Array(rows);
+   var i, j;
+   for (i=0; i<= n_rows; i++)
+   rows[i] = new Array(i+1);
+   for (i=0; i<= n_rows; i++) {
+     rows[i][0] = 1;
+     rows[i][i] = 1;
+     for (j=1; j<i; j++) {
+       rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
+      array[rows];
+     } 
+   }
 
-//   return array;
-// }
+  return array;
+} */
 
 function calcolaTriangoloTartaglia(numeroRighe) {
   const triangolo = [];
@@ -437,7 +437,7 @@ function calcolaTriangoloTartaglia(numeroRighe) {
     triangolo[i] = [];
 
     for (let j = 0; j <= i; j++) {
-      if (j === 0 || j === i) {
+      if (j == 0 || j == i) {
         triangolo[i][j] = 1;
       } else {
         triangolo[i][j] = triangolo[i - 1][j - 1] + triangolo[i - 1][j];
