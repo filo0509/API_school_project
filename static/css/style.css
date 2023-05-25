@@ -1,0 +1,50 @@
+:root {
+  /* CSS HEX */
+  --orange-peel: #ff9f1cff;
+  --hunyadi-yellow: #ffbf69ff;
+  --white: #ffffffff;
+  --mint-green: #cbf3f0ff;
+  --light-sea-green: #2ec4b6ff;
+
+  /* CSS HSL */
+  --orange-peel: hsla(35, 100%, 55%, 1);
+  --hunyadi-yellow: hsla(34, 100%, 71%, 1);
+  --white: hsla(0, 0%, 100%, 1);
+  --mint-green: hsla(176, 62%, 87%, 1);
+  --light-sea-green: hsla(174, 62%, 47%, 1);
+  --rose: #f72585ff;
+  --fandango: #b5179eff;
+  --grape: #7209b7ff;
+  --chrysler-blue: #560badff;
+  --dark-blue: #480ca8ff;
+  --zaffre: #3a0ca3ff;
+  --palatinate-blue: #3f37c9ff;
+  --neon-blue: #4361eeff;
+  --chefchaouen-blue: #4895efff;
+  --vivid-sky-blue: #4cc9f0ff;
+
+  /* CSS HSL */
+  --rose: hsla(333, 93%, 56%, 1);
+  --fandango: hsla(309, 77%, 40%, 1);
+  --grape: hsla(276, 91%, 38%, 1);
+  --chrysler-blue: hsla(268, 88%, 36%, 1);
+  --dark-blue: hsla(263, 87%, 35%, 1);
+  --zaffre: hsla(258, 86%, 34%, 1);
+  --palatinate-blue: hsla(243, 57%, 50%, 1);
+  --neon-blue: hsla(229, 83%, 60%, 1);
+  --chefchaouen-blue: hsla(212, 84%, 61%, 1);
+  --vivid-sky-blue: hsla(194, 85%, 62%, 1);
+  --gradient-bottom-left: linear-gradient(
+    315deg,
+    #f72585ff,
+    #b5179eff,
+    #7209b7ff,
+    #560badff,
+    #480ca8ff,
+    #3a0ca3ff,
+    #3f37c9ff,
+    #4361eeff,
+    #4895efff,
+    #4cc9f0ff
+  );
+}
