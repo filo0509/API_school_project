@@ -11,24 +11,28 @@ var path = require("path");
 
 const sqlite3 = require("sqlite3").verbose();
 
-let db = new sqlite3.Database("sqlite-sakila.db", sqlite3.OPEN_READWRITE, (err) => {
-  if (err) {
-    console.error(err.message);
+let db = new sqlite3.Database(
+  "sqlite-sakila.db",
+  sqlite3.OPEN_READWRITE,
+  (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Connected to the sqlite-sakila database.");
   }
-  console.log("Connected to the sqlite-sakila database.");
-});
+);
 
 console.log("  richiesta multpla EACH (funzione chiamata per ogni riga)");
 db.serialize(() => {
   db.each(
-    `SELECT actor_id as id,
-                  title as title
-           FROM actor_id`,
+    `SELECT actor_id as id
+           FROM actor`,
     (err, row) => {
       if (err) {
         console.error(err.message);
+      } else {
+        console.log(row.id + "\t" + row);
       }
-      console.log(row.id + "\t" + row.title);
     }
   );
 });
@@ -413,18 +417,17 @@ function generateRandomPassword(max) {
 
 function triangleoftartaglia(n) {
   let n_rows = n;
-  let rows = new Array(n_rows+1);
+  let rows = new Array(n_rows + 1);
   let array = new Array(rows);
   var i, j;
-  for (i=0; i<= n_rows; i++)
-  rows[i] = new Array(i+1);
-  for (i=0; i<= n_rows; i++) {
+  for (i = 0; i <= n_rows; i++) rows[i] = new Array(i + 1);
+  for (i = 0; i <= n_rows; i++) {
     rows[i][0] = 1;
     rows[i][i] = 1;
-    for (j=1; j<i; j++) {
-      rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
+    for (j = 1; j < i; j++) {
+      rows[i][j] = rows[i - 1][j - 1] + rows[i - 1][j];
       array[rows];
-    } 
+    }
   }
 
   return array;
