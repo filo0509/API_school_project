@@ -1,6 +1,6 @@
-// Struttura da seguire nella costruzione del progetto:
-// ogni feature deve avere la sua pagina (per esempio il generatore di password casuali deve avere la propria pagina)
-// magari la parte di DataBase la mettiamo in un'unica pagina
+
+
+
 
 var http = require("http");
 var https = require("https");
@@ -170,25 +170,99 @@ function get_weak_mime(fn) {
   return "";
 }
 
+function login(req, res, post) {
+  /*
+  controllo se cookie esiste su disco e valido
+  manca cancellazione file scaduti
+  */
+  var session;
+  cookiename = "sessionId"  
+  cookielist = parseCookies(req.headers.cookie)  
+  if (cookiename in cookielist)  
+    usercookie = cookielist[cookiename]   
+  else usercookie = "";
+  
+  dirname = "tmpcookie"  
+  if (!fs.existsSync(dirname)) { fs.mkdirSync(dirname); }  
+  if (post.logout)  
+    if (fs.existsSync(dirname + '/' + usercookie + '.txt'))
+      fs.unlinkSync(dirname + '/' + usercookie + '.txt')  
+  seconds = 3000;  
+  expires = new Date(new Date().getTime() + seconds * 1000).toUTCString() 
+  if (usercookie) {  
+    
+    session = read_session(dirname + '/' + usercookie + '.txt')
+    dt = session._expires ? Date.parse(session._expires) : Date.parse('01 Jan 1970 00:00:00 GMT');
+    if (dt > Date.now()) {  
+      return session; 
+    }
+    usercookie = ''
+  }
+
+  cookievalue = generateId(10);  
+  {
+    var us1 = post.user
+    var pw1 = post.password;
+    var tizio = test_user(us1, pw1) 
+    if (tizio) {  
+      if (!usercookie) {  
+        usercookie = cookievalue  
+        
+        fs.writeFileSync(dirname + '/' + usercookie + '.txt', JSON.stringify(
+          {
+            "_expires": expires, "_user": tizio.user,
+            "_userdata":tizio,  
+            "_id": usercookie, "_file": dirname + '/' + usercookie + '.txt'
+          }));
+        
+        
+        res.writeHead(200, {
+          'Content-Type': 'text/html',
+          'Set-Cookie': cookiename + '=' + cookievalue + " ; expires=" + expires
+        });
+        res.write(`<!DOCTYPE html><html lang="en-US"><head>  <meta charset="utf-8">
+          <link rel=\"icon\" href=\"data:,\"></link>
+          </head><body>
+           <h3>benvenuto ${tizio.user}        </h3>
+          <a href='/' >vai al main</a>
+          </body></html>
+          `);
+        res.end();
+        return false;  
+      }
+      
+    }
+    else { 
+      res.writeHead(200, {
+        'Content-Type': 'text/html',
+        'other-heading': 'set'
+      });
+      res.write(`<!DOCTYPE html><html lang="en-US"><head>  <meta charset="utf-8">
+          <link rel=\"icon\" href=\"data:,\"></link>
+          </head><body>
+          <h3>LOGIN
+          <form>
+          <table border=2>
+            <tr><td><label for="user">User:</label>
+            <td><input type="text" id="user" name="user"><br>
+            </tr><tr><td><label for="password">Password:</label>
+            <td><input type="password" id="password" name="password"><br>
+            </tr><tr><td><input type=submit name=submit value=ok>
+            </tr>
+          </table></form>
+          </h3>
+          </body></html>
+         `);
+      res.end();
+      return false;
+    }
+  }
+
+}
+
 function main(req, res) {
   res.writeHead(200, { "Content-Type": "text/html", "other-heading": "set" });
-  //   res.write(`<!DOCTYPE html><html lang="en-US"><head>
-  //   <meta charset="utf-8">
-  //   <link rel=\"icon\" href=\"data:,\"></link>
-  // </head><body>
-  //  <h3>MAIN`);
 
-  //   res.write(
-  //     "  <a href=./tabeASY.html style=' color:coral; '>Tabellina Asincrona</a> "
-  //   );
-  //   res.write(
-  //     "  <a href=./password_generator.html style=' color:coral; '>Generatore password</a> "
-  //   );
-  //   res.write(` <a href=/?logout=1>logout</a>
-  //   </h3>
-  //   </body></html>
-  //   `);
-  //   res.writeHeader(200, {"Content-Type": "text/html"});
   fs.readFile("index.html", function (error, pgResp) {
     if (error) {
       res.writeHead(404);
@@ -412,9 +486,9 @@ function asy_handling(req, res, post) {
   }
 }
 
-// ! Funzioni snippet, queste funzioni non sono proprie del server
 
-// Questa funzione genera una password di 14 caratteri
+
+
 function generateRandomPassword(max) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&*";
