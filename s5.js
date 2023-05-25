@@ -521,3 +521,63 @@ function generateRandomPassword(max) {
 
   return password;
 }
+
+/*  function triangleoftartaglia(n) {
+   let n_rows = n;
+   let rows = new Array(n_rows+1);
+   let array = new Array(rows);
+   var i, j;
+   for (i=0; i<= n_rows; i++)
+   rows[i] = new Array(i+1);
+   for (i=0; i<= n_rows; i++) {
+     rows[i][0] = 1;
+     rows[i][i] = 1;
+     for (j=1; j<i; j++) {
+       rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
+      array[rows];
+     } 
+   }
+
+  return array;
+} */
+
+function calcolaTriangoloTartaglia(numeroRighe) {
+  const triangolo = [];
+
+  for (let i = 0; i < numeroRighe; i++) {
+    triangolo[i] = [];
+
+    for (let j = 0; j <= i; j++) {
+      if (j == 0 || j == i) {
+        triangolo[i][j] = 1;
+      } else {
+        triangolo[i][j] = triangolo[i - 1][j - 1] + triangolo[i - 1][j];
+      }
+    }
+  }
+
+  return triangolo;
+}
+
+function stampaTriangoloTartaglia(triangolo) {
+  const numeroRighe = triangolo.length;
+
+  for (let i = 0; i < numeroRighe; i++) {
+    const riga = triangolo[i];
+    const spaziBianchi = " ".repeat(numeroRighe - i - 1);
+    const rigaFormattata = riga.join(" ");
+
+    console.log(spaziBianchi + rigaFormattata);
+  }
+
+
+  if (numeroRighe>=2 && numeroRighe<=10) {
+    const triangoloTartaglia = calcolaTriangoloTartaglia(numeroRighe);
+    stampaTriangoloTartaglia(triangoloTartaglia);
+  }
+  else {
+    cout<<"numero righe invalido";
+  }
+}
+
+
