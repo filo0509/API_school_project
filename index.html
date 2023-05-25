@@ -10,6 +10,7 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="static/css/style.css">
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
     </style>
@@ -19,15 +20,7 @@
         font-family: "Montserrat", sans-serif;
         height: 100%;
         background: rgb(0, 255, 229);
-        background: linear-gradient(
-          41deg,
-          rgba(0, 255, 229, 1) 1%,
-          rgba(150, 105, 244, 1) 21%,
-          rgba(181, 0, 255, 1) 35%,
-          rgba(207, 58, 152, 1) 58%,
-          rgba(234, 143, 65, 1) 82%,
-          rgba(255, 164, 0, 1) 100%
-        );
+        background: var(--gradient-bottom-left);
       }
       .card {
         background-color: rgba(255, 220, 234, 0.7);
@@ -48,7 +41,6 @@
         align-items: center;
         height: 100%;
       }
-
     </style>
     <title>Document</title>
   </head>
@@ -81,14 +73,27 @@
         </div>
         <div class="card col-lg-6" style="width: 18rem; margin: 1rem">
           <div class="card-body">
-            <h5 class="card-title">Triangle of Tartaglia</h5>
+            <h5 class="card-title">Trova il film </h5>
+            <p class="card-text">
+              Some quick example text to build on the card title and make up the
+              bulk of the card's content.
+            </p>
+            <a href="./TrovaFilm.html" class="btn btn-primary"
+              >Scegli l'attore</a
+            >
+          </div>
+        </div>
+        <div class="card col-lg-6" style="width: 18rem; margin: 1rem">
+          <div class="card-body">
+            <h5 class="card-title">Mexican food</h5>
             <p class="card-text">
               Some quick example text to build on the card title and make up the
               bulk of the card's content.
             </p>
 
-            <a href="./triangolo_tart.html" class="btn btn-primary"
-              >Generatore Triangolo di Tartaglia</a>
+            <a href="./api_call_client.html" class="btn btn-primary"
+              >Lasciati ispirare</a
+            >
           </div>
         </div>
         <div class="card col-lg-6" style="width: 18rem; margin: 1rem">

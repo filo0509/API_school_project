@@ -1,6 +1,6 @@
-// Struttura da seguire nella costruzione del progetto:
-// ogni feature deve avere la sua pagina (per esempio il generatore di password casuali deve avere la propria pagina)
-// magari la parte di DataBase la mettiamo in un'unica pagina
+
+
+
 
 var http = require("http");
 var https = require("https");
@@ -11,50 +11,54 @@ var path = require("path");
 
 const sqlite3 = require("sqlite3").verbose();
 
-let db = new sqlite3.Database("chinook.db", sqlite3.OPEN_READWRITE, (err) => {
-  if (err) {
-    console.error(err.message);
+let db = new sqlite3.Database(
+  "sqlite-sakila.db",
+  sqlite3.OPEN_READWRITE,
+  (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Connected to the sqlite-sakila database.");
   }
-  console.log("Connected to the chinook database.");
-});
+);
 
 console.log("  richiesta multpla EACH (funzione chiamata per ogni riga)");
 db.serialize(() => {
   db.each(
-    `SELECT PlaylistId as id,
-                  Name as name
-           FROM playlists where PlaylistId< 14`,
+    `SELECT actor_id as id
+           FROM actor`,
     (err, row) => {
       if (err) {
         console.error(err.message);
+      } else {
+        console.log(row.id + "\t" + row);
       }
-      console.log(row.id + "\t" + row.name);
     }
   );
 });
 let sql = {
-  play1: `SELECT PlaylistId id,
-                  Name name
-           FROM playlists
-           WHERE PlaylistId  = ?`,
-  art1: `SELECT ArtistId Id ,Name name
-            FROM artists
-            where ArtistId =? `,
-  art2: `SELECT ArtistId Id ,Name name
-            FROM artists
-            where ArtistId < ? `,
+  play1: `SELECT actor_id id,
+                  title title
+           FROM actor
+           WHERE actor_id  = ?`,
+  art1: `SELECT film_id Id ,title title
+            FROM film
+            where film_id =? `,
+  art2: `SELECT film_id Id ,title title
+          FROM film
+          where film_id =? `,
   art3: `SELECT * 
-            FROM artists
-            where ArtistId < ? `,
+            FROM film
+            where film_id < ? `,
   art4: `SELECT * 
-            FROM artists
-            where ArtistId < ? `,
+            FROM film
+            where film_id < ? `,
 };
-let playlistId = 1;
-let artistId = 16;
+let actor_id = 1;
+let film_id = 16;
 
 console.log("  richiesta multpla ALL (funzione chiamata una sola volta)");
-db.all(sql["art4"], [artistId], (err, rows) => {
+db.all(sql["art4"], [actor_id], (err, rows) => {
   if (err) {
     return console.error(err.message);
   }
@@ -69,7 +73,7 @@ db.all(sql["art4"], [artistId], (err, rows) => {
 
 console.log("  richiesta singola GET");
 
-db.get(sql["play1"], [playlistId], (err, row) => {
+db.get(sql["play1"], [film_id], (err, row) => {
   if (err) {
     return console.error(err.message);
   }
@@ -170,8 +174,115 @@ function get_weak_mime(fn) {
   return "";
 }
 
+function login(req, res, post) {
+  /*
+  controllo se cookie esiste su disco e valido
+  manca cancellazione file scaduti
+  */
+  var session;
+  cookiename = "sessionId"  
+  cookielist = parseCookies(req.headers.cookie)  
+  if (cookiename in cookielist)  
+    usercookie = cookielist[cookiename]   
+  else usercookie = "";
+  
+  dirname = "tmpcookie"  
+  if (!fs.existsSync(dirname)) { fs.mkdirSync(dirname); }  
+  if (post.logout)  
+    if (fs.existsSync(dirname + '/' + usercookie + '.txt'))
+      fs.unlinkSync(dirname + '/' + usercookie + '.txt')  
+  seconds = 3000;  
+  expires = new Date(new Date().getTime() + seconds * 1000).toUTCString() 
+  if (usercookie) {  
+    
+    session = read_session(dirname + '/' + usercookie + '.txt')
+    dt = session._expires ? Date.parse(session._expires) : Date.parse('01 Jan 1970 00:00:00 GMT');
+    if (dt > Date.now()) {  
+      return session; 
+    }
+    usercookie = ''
+  }
+
+  cookievalue = generateId(10);  
+  {
+    var us1 = post.user
+    var pw1 = post.password;
+    var tizio = test_user(us1, pw1) 
+    if (tizio) {  
+      if (!usercookie) {  
+        usercookie = cookievalue  
+        
+        fs.writeFileSync(dirname + '/' + usercookie + '.txt', JSON.stringify(
+          {
+            "_expires": expires, "_user": tizio.user,
+            "_userdata":tizio,  
+            "_id": usercookie, "_file": dirname + '/' + usercookie + '.txt'
+          }));
+        
+        
+        res.writeHead(200, {
+          'Content-Type': 'text/html',
+          'Set-Cookie': cookiename + '=' + cookievalue + " ; expires=" + expires
+        });
+        res.write(`<!DOCTYPE html><html lang="en-US"><head>  <meta charset="utf-8">
+          <link rel=\"icon\" href=\"data:,\"></link>
+          </head><body>
+           <h3>benvenuto ${tizio.user}        </h3>
+          <a href='/' >vai al main</a>
+          </body></html>
+          `);
+        res.end();
+        return false;  
+      }
+      
+    }
+    else { 
+      res.writeHead(200, {
+        'Content-Type': 'text/html',
+        'other-heading': 'set'
+      });
+      res.write(`<!DOCTYPE html><html lang="en-US"><head>  <meta charset="utf-8">
+          <link rel=\"icon\" href=\"data:,\"></link>
+          </head><body>
+          <h3>LOGIN
+          <form>
+          <table border=2>
+            <tr><td><label for="user">User:</label>
+            <td><input type="text" id="user" name="user"><br>
+            </tr><tr><td><label for="password">Password:</label>
+            <td><input type="password" id="password" name="password"><br>
+            </tr><tr><td><input type=submit name=submit value=ok>
+            </tr>
+          </table></form>
+          </h3>
+          </body></html>
+         `);
+      res.end();
+      return false;
+    }
+  }
+
+}
+
 function main(req, res) {
   res.writeHead(200, { "Content-Type": "text/html", "other-heading": "set" });
+  //   res.write(`<!DOCTYPE html><html lang="en-US"><head>
+  //   <meta charset="utf-8">
+  //   <link rel=\"icon\" href=\"data:,\"></link>
+  // </head><body>
+  //  <h3>MAIN`);
+
+  //   res.write(
+  //     "  <a href=./tabeASY.html style=' color:coral; '>Tabellina Asincrona</a> "
+  //   );
+  //   res.write(
+  //     "  <a href=./password_generator.html style=' color:coral; '>Generatore password</a> "
+  //   );
+  //   res.write(` <a href=/?logout=1>logout</a>
+  //   </h3>
+  //   </body></html>
+  //   `);
+  //   res.writeHeader(200, {"Content-Type": "text/html"});
   fs.readFile("index.html", function (error, pgResp) {
     if (error) {
       res.writeHead(404);
@@ -395,9 +506,9 @@ function asy_handling(req, res, post) {
   }
 }
 
-// ! Funzioni snippet, queste funzioni non sono proprie del server
 
-// Questa funzione genera una password di 14 caratteri
+
+
 function generateRandomPassword(max) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&*";
@@ -411,21 +522,21 @@ function generateRandomPassword(max) {
   return password;
 }
 
-/*  function triangleoftartaglia(n) {
-   let n_rows = n;
-   let rows = new Array(n_rows+1);
-   let array = new Array(rows);
-   var i, j;
-   for (i=0; i<= n_rows; i++)
-   rows[i] = new Array(i+1);
-   for (i=0; i<= n_rows; i++) {
-     rows[i][0] = 1;
-     rows[i][i] = 1;
-     for (j=1; j<i; j++) {
-       rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
+function triangleoftartaglia(n) {
+  let n_rows = n;
+  let rows = new Array(n_rows+1);
+  let array = new Array(rows);
+  var i, j;
+  for (i=0; i<= n_rows; i++)
+  rows[i] = new Array(i+1);
+  for (i=0; i<= n_rows; i++) {
+    rows[i][0] = 1;
+    rows[i][i] = 1;
+    for (j=1; j<i; j++) {
+      rows[i][j] = rows[i-1][j-1] + rows[i-1][j];
       array[rows];
-     } 
-   }
+    } 
+  }
 
   return array;
 } */
@@ -468,5 +579,3 @@ function stampaTriangoloTartaglia(triangolo) {
     cout<<"numero righe invalido";
   }
 }
-
-
