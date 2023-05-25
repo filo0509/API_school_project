@@ -11,50 +11,50 @@ var path = require("path");
 
 const sqlite3 = require("sqlite3").verbose();
 
-let db = new sqlite3.Database("chinook.db", sqlite3.OPEN_READWRITE, (err) => {
+let db = new sqlite3.Database("sqlite-sakila.db", sqlite3.OPEN_READWRITE, (err) => {
   if (err) {
     console.error(err.message);
   }
-  console.log("Connected to the chinook database.");
+  console.log("Connected to the sqlite-sakila database.");
 });
 
 console.log("  richiesta multpla EACH (funzione chiamata per ogni riga)");
 db.serialize(() => {
   db.each(
-    `SELECT PlaylistId as id,
-                  Name as name
-           FROM playlists where PlaylistId< 14`,
+    `SELECT actor_id as id,
+                  title as title
+           FROM actor_id`,
     (err, row) => {
       if (err) {
         console.error(err.message);
       }
-      console.log(row.id + "\t" + row.name);
+      console.log(row.id + "\t" + row.title);
     }
   );
 });
 let sql = {
-  play1: `SELECT PlaylistId id,
-                  Name name
-           FROM playlists
-           WHERE PlaylistId  = ?`,
-  art1: `SELECT ArtistId Id ,Name name
-            FROM artists
-            where ArtistId =? `,
-  art2: `SELECT ArtistId Id ,Name name
-            FROM artists
-            where ArtistId < ? `,
+  play1: `SELECT actor_id id,
+                  title title
+           FROM actor
+           WHERE actor_id  = ?`,
+  art1: `SELECT film_id Id ,title title
+            FROM film
+            where film_id =? `,
+  art2: `SELECT film_id Id ,title title
+          FROM film
+          where film_id =? `,
   art3: `SELECT * 
-            FROM artists
-            where ArtistId < ? `,
+            FROM film
+            where film_id < ? `,
   art4: `SELECT * 
-            FROM artists
-            where ArtistId < ? `,
+            FROM film
+            where film_id < ? `,
 };
-let playlistId = 1;
-let artistId = 16;
+let actor_id = 1;
+let film_id = 16;
 
 console.log("  richiesta multpla ALL (funzione chiamata una sola volta)");
-db.all(sql["art4"], [artistId], (err, rows) => {
+db.all(sql["art4"], [actor_id], (err, rows) => {
   if (err) {
     return console.error(err.message);
   }
@@ -69,7 +69,7 @@ db.all(sql["art4"], [artistId], (err, rows) => {
 
 console.log("  richiesta singola GET");
 
-db.get(sql["play1"], [playlistId], (err, row) => {
+db.get(sql["play1"], [film_id], (err, row) => {
   if (err) {
     return console.error(err.message);
   }
