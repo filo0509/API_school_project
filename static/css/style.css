@@ -34,17 +34,5 @@
   --neon-blue: hsla(229, 83%, 60%, 1);
   --chefchaouen-blue: hsla(212, 84%, 61%, 1);
   --vivid-sky-blue: hsla(194, 85%, 62%, 1);
-  --gradient-bottom-left: linear-gradient(
-    315deg,
-    #f72585ff,
-    #b5179eff,
-    #7209b7ff,
-    #560badff,
-    #480ca8ff,
-    #3a0ca3ff,
-    #3f37c9ff,
-    #4361eeff,
-    #4895efff,
-    #4cc9f0ff
-  );
+  --gradient-bottom-left: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
 }
