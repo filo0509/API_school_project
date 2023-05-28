@@ -7,25 +7,64 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="static/css/style.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+      </style>
+      <style>
+        html,
+        body {
+          font-family: "Montserrat", sans-serif;
+          height: 100%;
+          background: rgb(0, 255, 229);
+          background: var(--gradient-bottom-left);
+        }
+  
+        #contenuto {
+          background-color: rgba(255, 240, 240, 0.4);
+          border-radius: 2rem;
+          padding: 1rem;
+          max-width: 50%;
+        }
+        #contenitore-center {
+          display: flex;
+          align-items: center;
+          height: 100%;
+        }
+        .btn {
+          border-radius: 1rem;
+        }
+        .form-control {
+          border-radius: 1rem;
+        }
+        table {
+            border: 0px !important;
+        }
+      </style>
   </head>
   <body>
-    <td>
-      <h2 title="Questa richiesta viene gestita direttamente dal server">
-        ATTORE
-      </h2>
-      <form>
-        <label for="x1b">Id film:</label>
-        <input type="text" id="x1c" name="x1c" /><br />
-      </form>
-      <button
-        onclick="get_artists(this, 'x1c', 'contenutoart')"
-        title="r"
-      >
-        Chiedi
-      </button>
+    <div id="contenitore-center">
+        <div class="container" id="contenuto">
+            <center><h1 class="display-1" title="Questa richiesta viene gestita direttamente dal server">Actors from film</h2></center>
+                <form>
+                  <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">Nome film</span>
+                      <input class="form-control" oninput="this.value = this.value.toUpperCase()" type="text" id="x1c" name="x1c" />
+                  </div>
+                </form>
+                <center>
+                  <button
+                  onclick="get_artists(this, 'x1c', 'contenutoart')"
+                  title="r"
+                  class="btn btn-primary"
+                >
+                  Chiedi
+                </button>
+                </center>
+                <div style="margin-top: 2rem;" id="contenutoart"></div>
+        </div>
+    </div>
 
-      <div id="contenutoart"></div>
-    </td>
 
     <script src="static/javascript/main.js"></script>
     <script

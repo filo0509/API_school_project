@@ -2,7 +2,7 @@ function crea_tabella_da_query_sqlite_json(json0) {
   // json0: text . esempio [{"ArtistId":1,"Name":"AC/DC"},...,...] array di oggetti
   // se c'e' almeno una riga, leggo le intestazioni
   let tbl = JSON.parse(json0);
-  let t = "<table border=1><tr>";
+  let t = "<table class='table' border=1><tr>";
   if (tbl.length > 0) {
     campi = Object.keys(tbl[0]);
     for (c = 0; c < campi.length; c++) t += `<th>${campi[c]}`;
@@ -16,7 +16,7 @@ function crea_tabella_da_query_sqlite_json(json0) {
     ) {
       t += "<tr>";
       for (c = 0; c < campi.length; c++) t += `<td>${tbl[l][campi[c]]}`;
-      t += "</tr>";
+      t += "</td></tr>";
     }
     // COME SOPRA: alternativa con foreach()
     /*

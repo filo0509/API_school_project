@@ -347,24 +347,25 @@ function qry(q_name, par1, fun) {
   });
 }
 
-function qry_json(q_name, par1, fun) {
-  let sql = {
+function artistsFromFilm(q_name, par1, fun) {
+    let sql = {
+      // le prime tre query servono per trovare gli attori che recitano in un film
     play1: `SELECT actor_id, film_id
            FROM film_actor
            WHERE film_id = ?`,
-    play2: `SELECT first_name as nome, last_name as cognome
+    play2: `SELECT first_name as Nome, last_name as Cognome
     FROM actor
     WHERE actor_id = ?`,
     play3: `SELECT *
         FROM film
-        WHERE title LIKE '?'`,
+        WHERE title = ?`,
   };
 
-    // Da sistemare la ricerca col LIKE
-  db.get(sql["play3"], ["%" + par1 + "%"], (err, row) => {
+  // Da sistemare la ricerca col LIKE
+  db.get(sql["play3"], [par1], (err, row) => {
     if (err) {
       console.log("Err: ", err);
-    } else {
+    } else if (row) {
       console.log("name", row);
       var ret = "-";
       var actors = [];
@@ -391,6 +392,12 @@ function qry_json(q_name, par1, fun) {
           }
         }
       });
+    } else {
+        var ret = [
+            { Nome: 'Nessun', Cognome: 'Attore' },
+          ]
+        console.log("Row non contiene nulla")
+      fun(JSON.stringify(ret));
     }
   });
 }
@@ -489,7 +496,7 @@ function asy_handling(req, res, post) {
   } else if (req.headers.artists) {
     if (post.nume) {
       res.writeHead(200, { "Content-Type": "application/txt" });
-      qry_json("play1", post.nume, (json1) => {
+      artistsFromFilm("play1", post.nume, (json1) => {
         res.write(json1);
         return res.end();
       });
