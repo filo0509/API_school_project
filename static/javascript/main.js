@@ -284,3 +284,41 @@ function passwordView(o1, var0, dst) {
   //xhttp.send(); // if GET request is in URL
   xhttp.send(ky); // if POST request is  payload
 }
+
+async function generateTartagliaTriangle(rows) {
+  const triangle = [];
+
+  for (let i = 0; i < rows; i++) {
+    triangle[i] = [];
+    triangle[i][0] = 1;
+
+    for (let j = 1; j < i; j++) {
+      triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+    }
+
+    triangle[i][i] = 1;
+  }
+
+  return triangle;
+}
+
+async function printTartagliaTriangleAsync(rows) {
+  const triangle = await generateTartagliaTriangle(rows);
+  const container = document.getElementById("triangle-container");
+
+  container.innerHTML = "";
+
+  for (let i = 0; i < rows; i++) {
+    const row = document.createElement("div");
+    row.classList.add("triangle-row");
+
+    for (let j = 0; j <= i; j++) {
+      const cell = document.createElement("span");
+      cell.classList.add("triangle-cell");
+      cell.innerText = triangle[i][j].toString();
+      row.appendChild(cell);
+    }
+
+    container.appendChild(row);
+  }
+}
