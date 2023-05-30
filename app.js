@@ -445,10 +445,10 @@ function filmsFromActor(q_name, par1, fun) {
             // console.log(row)
             db.all(sql["play2"], [row.film_id], (err, rows1) => {
               if (err) {
-                console.log(JSON.stringify("Query error for " + q_name))
+                console.log(JSON.stringify("Query error for " + q_name));
                 ret = JSON.stringify("Query error for " + q_name);
               } else {
-                console.log("Ciao", rows1[0])
+                console.log("Ciao", rows1[0]);
                 actors.push(rows1[0]);
                 console.log("Ret: ", actors);
                 ret = JSON.stringify(actors);
@@ -531,12 +531,6 @@ function asy_handling(req, res, post) {
 
     res.writeHead(200, { "Content-Type": "application/txt" });
     return res.end(txt1);
-  } else if (req.headers.pow) {
-    if (post.nume && post.exp) {
-      txt1 = "" + funzione_pow(post.nume, post.exp);
-    }
-    res.writeHead(200, { "Content-Type": "application/txt" });
-    return res.end(txt1);
   } else if (req.headers.psw) {
     if (post.nume) {
       txt1 = "" + generateRandomPassword(post.nume);
@@ -549,17 +543,6 @@ function asy_handling(req, res, post) {
     }
     res.writeHead(200, { "Content-Type": "application/txt" });
     return res.end(txt1);
-  } else if (req.headers.play) {
-    if (post.nume) {
-      res.writeHead(200, { "Content-Type": "application/txt" });
-      qry("play1", post.nume, (txt1) => {
-        res.write(txt1);
-        return res.end();
-      });
-    } else {
-      res.write("<b>Empty code</b>");
-      return res.end();
-    }
   } else if (req.headers.artists) {
     if (post.nume) {
       res.writeHead(200, { "Content-Type": "application/txt" });
@@ -579,45 +562,19 @@ function asy_handling(req, res, post) {
       res.write("<b>Empty code</b>");
       return res.end();
     }
-  } else if (req.headers.airq) {
-    if (post.lat0) {
-      console.log("no1");
-
-      qry_indirect(post.lat0, post.lon0, (json1) => {
-        res.writeHead(200, { "Content-Type": "application/txt" });
-        res.write(json1);
-        return res.end();
-      });
-    } else {
-      res.writeHead(200, { "Content-Type": "application/txt" });
-      res.write("<b>Empty code</b>");
-      return res.end();
-    }
-  } else if (req.headers.cane) {
-    if (1 > 0) {
-      qry_indirect_cane((indirzzo) => {
-        res.writeHead(200, { "Content-Type": "application/txt" });
-        res.write(indirzzo);
-        return res.end();
-      });
-    } else {
-      res.writeHead(200, { "Content-Type": "application/txt" });
-      res.write("<b>Empty code</b>");
-      return res.end();
-    }
   } else {
-    res.writeHead(401, { "Content-Type": "text/html" });
-    res.write("<h2>401 not auth" + req.headers.airq);
+    res.writeHead(200, { "Content-Type": "application/txt" });
+    res.write("<b>Empty code</b>");
     return res.end();
   }
 
-function generateRandomPassword(max) {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&*";
-  let password = "";
-  if (max > 20) {
-    max = 20;
-  }
+  function generateRandomPassword(max) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&*";
+    let password = "";
+    if (max > 20) {
+      max = 20;
+    }
 
     for (let i = 0; i < max; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length);
