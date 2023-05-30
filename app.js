@@ -543,9 +543,9 @@ function asy_handling(req, res, post) {
     }
     res.writeHead(200, { "Content-Type": "application/txt" });
     return res.end(txt1);
-  } else if (req.headers.tot) {
-    if (post.nume) {
-      txt1 = "" + triangleoftartaglia(post.nume);
+  } else if (req.headers.row) {
+    if (post.linee) {
+      txt1 = "" + generateTartagliaTriangle(post.linee);
     }
     res.writeHead(200, { "Content-Type": "application/txt" });
     return res.end(txt1);
@@ -646,42 +646,24 @@ function generateRandomPassword(max) {
   return array;
 } */
 
-  function calcolaTriangoloTartaglia(numeroRighe) {
-    const triangolo = [];
+function generateTartagliaTriangle(rows) {
+  const triangle = [];
 
-    for (let i = 0; i < numeroRighe; i++) {
-      triangolo[i] = [];
+  for (let i = 0; i < rows; i++) {
+    triangle[i] = [];
+    triangle[i][0] = 1;
 
-      for (let j = 0; j <= i; j++) {
-        if (j == 0 || j == i) {
-          triangolo[i][j] = 1;
-        } else {
-          triangolo[i][j] = triangolo[i - 1][j - 1] + triangolo[i - 1][j];
-        }
-      }
+    for (let j = 1; j < i; j++) {
+      triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
     }
 
-    return triangolo;
+    triangle[i][i] = 1;
+    triangle[i][i+1] = "</br>";
   }
 
-  function stampaTriangoloTartaglia(triangolo) {
-    const numeroRighe = triangolo.length;
-
-    for (let i = 0; i < numeroRighe; i++) {
-      const riga = triangolo[i];
-      const spaziBianchi = " ".repeat(numeroRighe - i - 1);
-      const rigaFormattata = riga.join(" ");
-
-      console.log(spaziBianchi + rigaFormattata);
-    }
-
-    if (numeroRighe >= 2 && numeroRighe <= 10) {
-      const triangoloTartaglia = calcolaTriangoloTartaglia(numeroRighe);
-      stampaTriangoloTartaglia(triangoloTartaglia);
-    } else {
-      cout << "numero righe invalido";
-    }
-  }
+  console.log(triangle);
+  return triangle;
+}
 
   function sleep(ms) {
     return new Promise((resolve) => {
