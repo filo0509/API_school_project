@@ -32,6 +32,20 @@ db.serialize(() => {
     }
   );
 });
+console.log("  richiesta multpla EACH (funzione chiamata per ogni riga)");
+db.serialize(() => {
+  db.each(
+    `SELECT *
+           FROM film`,
+    (err, row) => {
+      if (err) {
+        console.error(err.message);
+      } else {
+        console.log(row.actor_id + "\t" + row.first_name);
+      }
+    }
+  );
+});
 // let sql = {
 //   play1: `SELECT *
 //            FROM film_actor
@@ -399,6 +413,61 @@ function artistsFromFilm(q_name, par1, fun) {
     }
   });
 }
+function filmsFromActor(q_name, par1, fun) {
+  let sql = {
+    // le prime tre query servono per trovare gli attori che recitano in un film
+    play1: `SELECT actor_id, film_id
+         FROM film_actor
+         WHERE actor_id = ?`,
+    play2: `SELECT title as Titolo
+  FROM film
+  WHERE film_id = ?`,
+    play3: `SELECT *
+      FROM actor
+      WHERE last_name = ?`,
+  };
+
+  // Da sistemare la ricerca col LIKE
+  db.get(sql["play3"], [par1], (err, row) => {
+    if (err) {
+      console.log("Err: ", err);
+    } else if (row) {
+      console.log("name", row);
+      var ret = "-";
+      var actors = [];
+      // Devo trovare l'id del film
+      db.all(sql[q_name], [row.actor_id], (err, rows) => {
+        if (err) {
+          ret = JSON.stringify("Query error for " + q_name);
+        } else {
+          var iterations = rows.length;
+          for (const row of rows) {
+            // console.log(row)
+            db.all(sql["play2"], [row.film_id], (err, rows1) => {
+              if (err) {
+                console.log(JSON.stringify("Query error for " + q_name))
+                ret = JSON.stringify("Query error for " + q_name);
+              } else {
+                console.log("Ciao", rows1[0])
+                actors.push(rows1[0]);
+                console.log("Ret: ", actors);
+                ret = JSON.stringify(actors);
+                if (!--iterations) {
+                  console.log("ciao", ret);
+                  fun(ret);
+                }
+              }
+            });
+          }
+        }
+      });
+    } else {
+      var ret = [{ film: " nessun fil" }];
+      console.log("Row non contiene nulla");
+      fun(JSON.stringify(ret));
+    }
+  });
+}
 
 const options_1 = {
   method: "GET",
@@ -498,6 +567,14 @@ function asy_handling(req, res, post) {
         res.write(json1);
         return res.end();
       });
+    }
+  } else if (req.headers.films) {
+    if (post.nume) {
+      res.writeHead(200, { "Content-Type": "application/txt" });
+      filmsFromActor("play1", post.nume, (json1) => {
+        res.write(json1);
+        return res.end();
+      });
     } else {
       res.write("<b>Empty code</b>");
       return res.end();
@@ -533,7 +610,6 @@ function asy_handling(req, res, post) {
     res.write("<h2>401 not auth" + req.headers.airq);
     return res.end();
   }
-}
 
 function generateRandomPassword(max) {
   const characters =
@@ -543,15 +619,15 @@ function generateRandomPassword(max) {
     max = 20;
   }
 
-  for (let i = 0; i < max; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    password += characters[randomIndex];
+    for (let i = 0; i < max; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      password += characters[randomIndex];
+    }
+
+    return password;
   }
 
-  return password;
-}
-
-/*  function triangleoftartaglia(n) {
+  /*  function triangleoftartaglia(n) {
    let n_rows = n;
    let rows = new Array(n_rows+1);
    let array = new Array(rows);
@@ -570,45 +646,46 @@ function generateRandomPassword(max) {
   return array;
 } */
 
-function calcolaTriangoloTartaglia(numeroRighe) {
-  const triangolo = [];
+  function calcolaTriangoloTartaglia(numeroRighe) {
+    const triangolo = [];
 
-  for (let i = 0; i < numeroRighe; i++) {
-    triangolo[i] = [];
+    for (let i = 0; i < numeroRighe; i++) {
+      triangolo[i] = [];
 
-    for (let j = 0; j <= i; j++) {
-      if (j == 0 || j == i) {
-        triangolo[i][j] = 1;
-      } else {
-        triangolo[i][j] = triangolo[i - 1][j - 1] + triangolo[i - 1][j];
+      for (let j = 0; j <= i; j++) {
+        if (j == 0 || j == i) {
+          triangolo[i][j] = 1;
+        } else {
+          triangolo[i][j] = triangolo[i - 1][j - 1] + triangolo[i - 1][j];
+        }
       }
+    }
+
+    return triangolo;
+  }
+
+  function stampaTriangoloTartaglia(triangolo) {
+    const numeroRighe = triangolo.length;
+
+    for (let i = 0; i < numeroRighe; i++) {
+      const riga = triangolo[i];
+      const spaziBianchi = " ".repeat(numeroRighe - i - 1);
+      const rigaFormattata = riga.join(" ");
+
+      console.log(spaziBianchi + rigaFormattata);
+    }
+
+    if (numeroRighe >= 2 && numeroRighe <= 10) {
+      const triangoloTartaglia = calcolaTriangoloTartaglia(numeroRighe);
+      stampaTriangoloTartaglia(triangoloTartaglia);
+    } else {
+      cout << "numero righe invalido";
     }
   }
 
-  return triangolo;
-}
-
-function stampaTriangoloTartaglia(triangolo) {
-  const numeroRighe = triangolo.length;
-
-  for (let i = 0; i < numeroRighe; i++) {
-    const riga = triangolo[i];
-    const spaziBianchi = " ".repeat(numeroRighe - i - 1);
-    const rigaFormattata = riga.join(" ");
-
-    console.log(spaziBianchi + rigaFormattata);
+  function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
   }
-
-  if (numeroRighe >= 2 && numeroRighe <= 10) {
-    const triangoloTartaglia = calcolaTriangoloTartaglia(numeroRighe);
-    stampaTriangoloTartaglia(triangoloTartaglia);
-  } else {
-    cout << "numero righe invalido";
-  }
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
 }

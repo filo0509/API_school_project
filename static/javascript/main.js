@@ -15,8 +15,8 @@ function crea_tabella_da_query_sqlite_json(json0) {
       l++ // ogni linea restituita dalla query
     ) {
       t += "<tr>";
-      for (c = 0; c < campi.length; c++) t += `<td>${tbl[l][campi[c]]}`;
-      t += "</td></tr>";
+      for (c = 0; c < campi.length; c++) t += `<td>${tbl[l][campi[c]]}</td>`;
+      t += "</tr>";
     }
     // COME SOPRA: alternativa con foreach()
     /*
@@ -111,8 +111,31 @@ function get_artists(o1, var0, dst) {
       //xhttp.abort();
     }
   };
+
   site = "ASY"; // header per indicare  richiesta asincrona
   he00 = "artists";
+  ky = "nume=" + document.getElementById(var0).value; // nume=7
+  //ky+="&exp="+document.getElementById(var1).value; // nume=7
+  xhttp.open("POST", site, true); // "ASY?pro="+o1.value, true);
+  xhttp.setRequestHeader(he00, "ON"); // // trick to insulate HTTP standard requests
+  xhttp.setRequestHeader("Accept", null);
+  //xhttp.send(); // if GET request is in URL
+  xhttp.send(ky); // if POST request is  payload
+}
+function get_films(o1, var0, dst) {
+  // if pending, abort else initiate a new one
+  dst1 = dst;
+  xhttp.onreadystatechange = function (o1, dst, var0, var1) {
+    //dst1=dst
+    if (xhttp.readyState == 4 && this.status == 200) {
+      var temp = xhttp.responseText;
+      temp = crea_tabella_da_query_sqlite_json(temp);
+      document.getElementById(dst1).innerHTML = temp; //"txt"
+      //xhttp.abort();
+    }
+  };
+  site = "ASY"; // header per indicare  richiesta asincrona
+  he00 = "films";
   ky = "nume=" + document.getElementById(var0).value; // nume=7
   //ky+="&exp="+document.getElementById(var1).value; // nume=7
   xhttp.open("POST", site, true); // "ASY?pro="+o1.value, true);
@@ -230,6 +253,15 @@ function get_cagnaccio_a_caso(o1, dst, d_name) {
   //xhttp.send(); // if GET request is in URL
   xhttp.send(""); // if POST request is  payload
 }
+function trovaFilm(nome){
+  dst=selectRowsFilmId(id);
+  dst1=selectName(dst);
+}
+function trovaActor(nome){
+  dst=selectRowsActorId(id);
+  dst1=selectFirstName(dst);
+}
+
 
 function passwordView(o1, var0, dst) {
   // if pending, abort else initiate a new one
