@@ -348,8 +348,8 @@ function qry(q_name, par1, fun) {
 }
 
 function artistsFromFilm(q_name, par1, fun) {
-    let sql = {
-      // le prime tre query servono per trovare gli attori che recitano in un film
+  let sql = {
+    // le prime tre query servono per trovare gli attori che recitano in un film
     play1: `SELECT actor_id, film_id
            FROM film_actor
            WHERE film_id = ?`,
@@ -393,10 +393,8 @@ function artistsFromFilm(q_name, par1, fun) {
         }
       });
     } else {
-        var ret = [
-            { Nome: 'Nessun', Cognome: 'Attore' },
-          ]
-        console.log("Row non contiene nulla")
+      var ret = [{ Nome: "Nessun", Cognome: "Attore" }];
+      console.log("Row non contiene nulla");
       fun(JSON.stringify(ret));
     }
   });
@@ -541,6 +539,9 @@ function generateRandomPassword(max) {
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&*";
   let password = "";
+  if (max > 20) {
+    max = 20;
+  }
 
   for (let i = 0; i < max; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
