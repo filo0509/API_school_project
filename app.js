@@ -606,6 +606,10 @@ function asy_handling(req, res, post) {
 function generateTartagliaTriangle(rows) {
   const triangle = [];
 
+  if(rows > 18) {
+    rows = 18;
+  }
+
   for (let i = 0; i < rows; i++) {
     triangle[i] = [];
     triangle[i][0] = 1;
@@ -618,8 +622,10 @@ function generateTartagliaTriangle(rows) {
     triangle[i][i+1] = "</br>";
   }
 
+  const printtriangle = triangle.join(' ');
   console.log(triangle);
-  return triangle;
+  console.log(printtriangle);
+  return printtriangle;
 }
 
   function sleep(ms) {
